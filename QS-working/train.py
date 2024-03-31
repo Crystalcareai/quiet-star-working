@@ -106,7 +106,7 @@ def model_init(params):
     model.train()
     return model
 
-max_seq_length = 2048
+max_seq_length = 1024
 run_id = int(time.time())
 training_args = TrainingArguments(
     output_dir="./out",
@@ -134,7 +134,7 @@ peft_config = LoraConfig(
     target_modules = ["q_proj", "k_proj"],
     lora_alpha = 16,
     lora_dropout = 0, # Supports any, but = 0 is optimized
-    bias = "none", # Enable Dora method
+    bias = "none", 
     use_dora=True,
 )
 
