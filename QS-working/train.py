@@ -130,7 +130,7 @@ training_args = TrainingArguments(
 )
 
 peft_config = LoraConfig(
-          r = 16, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
+    r = 16, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
     target_modules = ["q_proj", "k_proj"],
     lora_alpha = 16,
     lora_dropout = 0, # Supports any, but = 0 is optimized
@@ -145,7 +145,7 @@ torch.autograd.set_detect_anomaly(True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # torch.cuda.set_device(device)
 
-model = model_init(None)  # Initialize the model
+model = model_init(None) 
 
 tokenizer = model.tokenizer
 
