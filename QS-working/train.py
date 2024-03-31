@@ -106,14 +106,14 @@ def model_init(params):
     model.train()
     return model
 
-max_seq_length = 1024
+max_seq_length = 2048
 run_id = int(time.time())
 training_args = TrainingArguments(
     output_dir="./out",
     num_train_epochs=3,
     per_device_train_batch_size=1,
     gradient_checkpointing=False,
-    gradient_accumulation_steps=8,
+    gradient_accumulation_steps=4,
     optim="lion_32bit",
     logging_steps=1,
     save_strategy="steps",
