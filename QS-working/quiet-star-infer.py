@@ -1,14 +1,14 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from accelerate import infer_auto_device_map, init_empty_weights, dispatch_model
-model_path = "Crystalcareai/Quiet-Star-Custom"
+model_path = "/workspace/quiet_star/quietqwen/Qwen1.5-MoE-A2.7B"
 
 n_ahead = 8
-n_ahead_talk = 1
+n_ahead_talk = 2
 merged_talk_heads = True
 
 model = AutoModelForCausalLM.from_pretrained(model_path,
-                                            #  load_in_4bit=True,
+                                             load_in_4bit=True,
                                              max_thoughts=n_ahead + n_ahead_talk + 1,
                                              merged_talk_heads=merged_talk_heads,
                                              merged_lm_and_talk_heads=False,
@@ -21,8 +21,8 @@ model = AutoModelForCausalLM.from_pretrained(model_path,
                                              use_weighted_talk_head=True,
                                              trust_remote_code=True,
                                              torch_dtype=torch.bfloat16,
-                                             device_map="auto"
-                                             
+                                             device_map="auto",
+                                            #  attn_implementation="flash_attention_2",
                                              )
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
@@ -39,7 +39,7 @@ model.rm_initialized = True
 
 model.original_mode = False
 
-input = "Assume the laws of physics on Earth. A small marble is put into a normal cup and the cup is placed upside down on a table. Someone then takes the cup and puts it inside the microwave. Where is the ball now? Explain your reasoning step by step."
+input = "It is not always easy to see who is related to whom -- and in which ways. The following argument pertains to this question: To begin with, Lesley is a close friend of Fernando. Moreover, being a close friend of Fernando or a schoolmate of Lowell is sufficient for being a great-grandfather of Leroy. It follows that Lesley is a great-grandfather of Leroy. Is the argument, given the explicitly stated premises, deductively valid or invalid?"
 
 input_ids = tokenizer.encode(input, return_tensors="pt").to(model.device)
 
@@ -82,7 +82,7 @@ def generate(input_ids, attention_mask, model, temp, max_length=20):
     return input_ids, attention_mask
 
 
-out = generate(input_ids, torch.ones_like(input_ids), model, 0.9, max_length=256)
+out = generate(input_ids, torch.ones_like(input_ids), model, 0.2, max_length=256)
 
 
 print(tokenizer.decode(out[0][0], skip_special_tokens=False))
