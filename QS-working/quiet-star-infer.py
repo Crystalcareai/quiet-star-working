@@ -1,14 +1,14 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from accelerate import infer_auto_device_map, init_empty_weights, dispatch_model
-model_path = "/workspace/quiet_star/quietqwen/Qwen1.5-MoE-A2.7B"
+model_path = "Crystalcareai/Quiet-Star-Custom"
 
 n_ahead = 8
 n_ahead_talk = 2
 merged_talk_heads = True
 
 model = AutoModelForCausalLM.from_pretrained(model_path,
-                                             load_in_4bit=True,
+                                            #  load_in_4bit=True,
                                              max_thoughts=n_ahead + n_ahead_talk + 1,
                                              merged_talk_heads=merged_talk_heads,
                                              merged_lm_and_talk_heads=False,
@@ -82,7 +82,7 @@ def generate(input_ids, attention_mask, model, temp, max_length=20):
     return input_ids, attention_mask
 
 
-out = generate(input_ids, torch.ones_like(input_ids), model, 0.2, max_length=256)
+out = generate(input_ids, torch.ones_like(input_ids), model, 1.0, max_length=256)
 
 
 print(tokenizer.decode(out[0][0], skip_special_tokens=False))
